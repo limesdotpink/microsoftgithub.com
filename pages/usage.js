@@ -127,7 +127,7 @@ export default function Home({ rickrolled }) {
           </a>{" "}
           • Not affiliated with Microsoft or any of its subsidiaries •{" "}
           <a
-            href="https://github.com/gitlimes/microsoftgithub.com"
+            href="https://github.com/limesdotpink/microsoftgithub.com"
             target="_blank"
             rel="noreferrer"
           >
