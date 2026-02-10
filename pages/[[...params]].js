@@ -48,41 +48,45 @@ export async function getServerSideProps({ req, res, query }) {
     method: "GET",
   });
 
-  const actualPage = await fetchActualPage.text();
+  let pageData = {};
 
-  const actualPageDom = parse(actualPage);
+  if (fetchActualPage.headers.get('content-type').includes('html')) {
+    const actualPage = await fetchActualPage.text();
 
-  // extrapolate the title, description, and image
-  const pageData = {
-    title:
-      decode(actualPageDom.querySelector("title").innerHTML) || "",
+    const actualPageDom = parse(actualPage);
 
-    description: actualPageDom.querySelector("meta[name='description']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[property='description']")?.getAttribute("content") || "",
+    // extrapolate the title, description, and image
+    pageData = {
+      title:
+        decode(actualPageDom.querySelector("title").innerHTML) || "",
 
-    image: actualPageDom.querySelector("meta[property='twitter:image']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[name='twitter:image']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[property='og:image']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[name='og:image']")?.getAttribute("content") || "",
+      description: actualPageDom.querySelector("meta[name='description']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[property='description']")?.getAttribute("content") || "",
 
-    imageAlt: actualPageDom.querySelector("meta[property='twitter:image:alt']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[name='twitter:image:alt']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[property='og:image:alt']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[name='og:image:alt']")?.getAttribute("content") || "",
+      image: actualPageDom.querySelector("meta[property='twitter:image']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[name='twitter:image']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[property='og:image']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[name='og:image']")?.getAttribute("content") || "",
 
-    twitterCard:
-      actualPageDom.querySelector("meta[property='twitter:card']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[name='twitter:card']")?.getAttribute("content") || "",
+      imageAlt: actualPageDom.querySelector("meta[property='twitter:image:alt']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[name='twitter:image:alt']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[property='og:image:alt']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[name='og:image:alt']")?.getAttribute("content") || "",
 
-    twitterSite: actualPageDom.querySelector("meta[property='twitter:site']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[name='twitter:site']")?.getAttribute("content") || "",
+      twitterCard:
+        actualPageDom.querySelector("meta[property='twitter:card']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[name='twitter:card']")?.getAttribute("content") || "",
 
-    ogSiteName: actualPageDom.querySelector("meta[property='og:site_name']")?.getAttribute("content") ||
-      actualPageDom.querySelector("meta[property='og:site_name']")?.getAttribute("content") || "",
+      twitterSite: actualPageDom.querySelector("meta[property='twitter:site']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[name='twitter:site']")?.getAttribute("content") || "",
 
-    favicon: actualPageDom.querySelector("link[rel='icon']")?.getAttribute("href") ||
-      actualPageDom.querySelector("link[rel='shortcut icon']")?.getAttribute("href") || ""
-  };
+      ogSiteName: actualPageDom.querySelector("meta[property='og:site_name']")?.getAttribute("content") ||
+        actualPageDom.querySelector("meta[property='og:site_name']")?.getAttribute("content") || "",
+
+      favicon: actualPageDom.querySelector("link[rel='icon']")?.getAttribute("href") ||
+        actualPageDom.querySelector("link[rel='shortcut icon']")?.getAttribute("href") || ""
+    };
+  }
 
   console.log(pageData)
 
@@ -109,31 +113,33 @@ export default function Home({ pageData, path, redirectUrl }) {
 
   return (
     <div>
-      <Head>
-        <title>{pageData.title}</title>
+      {pageData &&
+        <Head>
+          <title>{pageData.title}</title>
 
-        <meta name="description" content={pageData.description} />
-        <meta property="twitter:card" content={pageData.twitterCard} />
-        <meta property="twitter:site" content={pageData.twitterSite} />
-        <meta property="twitter:title" content={pageData.title} />
-        <meta property="twitter:description" content={pageData.description} />
-        <meta property="twitter:image" content={pageData.image} />
-        <meta property="og:title" content={pageData.title} />
-        <meta property="og:description" content={pageData.description} />
-        <meta property="og:image" content={pageData.image} />
-        <meta property="og:image:alt" content={pageData.imageAlt} />
-        <meta
-          property="og:url"
-          content={`https://microsoftgithub.com/${path}`}
-        />
-        <meta property="og:site_name" content={pageData.ogSiteName} />
-        <meta property="og:type" content="object" />
+          <meta name="description" content={pageData.description} />
+          <meta property="twitter:card" content={pageData.twitterCard} />
+          <meta property="twitter:site" content={pageData.twitterSite} />
+          <meta property="twitter:title" content={pageData.title} />
+          <meta property="twitter:description" content={pageData.description} />
+          <meta property="twitter:image" content={pageData.image} />
+          <meta property="og:title" content={pageData.title} />
+          <meta property="og:description" content={pageData.description} />
+          <meta property="og:image" content={pageData.image} />
+          <meta property="og:image:alt" content={pageData.imageAlt} />
+          <meta
+            property="og:url"
+            content={`https://microsoftgithub.com/${path}`}
+          />
+          <meta property="og:site_name" content={pageData.ogSiteName} />
+          <meta property="og:type" content="object" />
 
-        <link
-          rel="icon"
-          href={pageData.favicon}
-        />
-      </Head>
+          <link
+            rel="icon"
+            href={pageData.favicon}
+          />
+        </Head>
+      }
 
       {/**
       <p style={{ margin: "1em", fontSize: "18px" }}>
