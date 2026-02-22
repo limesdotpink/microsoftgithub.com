@@ -38,8 +38,9 @@
   line-height: 2rem;
 }
 
-.wrapper h1 {
+.wrapper h2 {
   margin: 3rem 0 1.5rem;
+  font-size: 2rem;
 }
 
 .wrapper footer p {

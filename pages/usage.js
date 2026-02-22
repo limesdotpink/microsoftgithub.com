@@ -2,10 +2,13 @@ import Head from "next/head";
 import styles from "../styles/usage.module.css";
 
 import { useState } from "react";
+import getSiteParams from "../lib/getSiteParams";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  const siteParams = await getSiteParams(context.req.headers["host"]);
+
   async function getStats() {
-    const statsFetch = await fetch("https://microsoftgithub.com/api/stats");
+    const statsFetch = await fetch(siteParams.statsEndpoint);
 
     if (!statsFetch.ok) {
       return { rickrolled: null };
@@ -18,66 +21,102 @@ export async function getServerSideProps() {
   return {
     props: {
       rickrolled,
+      siteParams,
     },
   };
 }
 
-export default function Home({ rickrolled }) {
+export default function Home({ rickrolled, siteParams }) {
   const [extendedStats, setExtendedStats] = useState(false);
+
+  const fakeSiteArray = siteParams.urlReplace.fake;
+
+  let fakeSiteElements = [
+    <code className="bg" key={0}>
+      {fakeSiteArray[0]}
+    </code>,
+  ];
+
+  if (fakeSiteArray.length > 1) {
+    for (let i = 1; i < fakeSiteArray.length; i++) {
+      let joiner = ", ";
+      if (i === fakeSiteArray.length - 1) {
+        joiner = " or ";
+      }
+
+      const el = (
+        <code className="bg" key={i}>
+          {fakeSiteArray[i]}
+        </code>
+      );
+      fakeSiteElements.push(joiner);
+      fakeSiteElements.push(el);
+    }
+  }
+
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} ${siteParams.site}`}>
       <Head>
-        <title>NotHub</title>
+        <title>{siteParams.title}</title>
         <meta
           name="description"
-          content="A website that lets you create official-looking GitHub links that
-          rickroll the visitor. Not affiliated with Microsoft in any way."
+          content={`A website that lets you create official-looking ${siteParams.realName} links that
+          rickroll the visitor. Not affiliated with ${siteParams.affiliation} or any of its subsidiaries.`}
         />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="NotHub" />
+        <meta name="twitter:title" content={siteParams.title} />
         <meta
           name="twitter:description"
-          content="A website that lets you create official-looking GitHub links that
-          rickroll the visitor. Not affiliated with Microsoft in any way."
+          content={`A website that lets you create official-looking ${siteParams.realName} links that
+          rickroll the visitor. Not affiliated with ${siteParams.affiliation} or any of its subsidiaries.`}
         />
         <meta
           name="twitter:image"
-          content="https://www.microsoftgithub.com/twimg.png"
+          content={`https://${siteParams.urlReplace.fake[0]}/${siteParams.site}.png`}
         />
       </Head>
 
       <div className={styles.content}>
         <div className={styles.hero}>
-          <h1>NotHub</h1>
+          <h1>{siteParams.title}</h1>
           <p>
-            A website that lets you create official-looking GitHub links that
-            rickroll the visitor.
+            A website that lets you create official-looking{" "}
+            {siteParams.realName} links that rickroll the visitor.
           </p>
         </div>
 
         <div className={styles.section}>
-          <h1>Usage</h1>
+          <h2>Usage</h2>
           <p>
-            Simply replace <code className="bg">github.com</code> with{" "}
-            <code className="bg">microsoftgithub.com</code>. The resulting URL
-            will redirect to the rickroll video, and its social media preview
-            will look identical to the official one.
+            Simply replace{" "}
+            {<code className="bg">{siteParams.urlReplace.real}</code>} with{" "}
+            {fakeSiteElements.map((e) => e)}. The resulting URL will redirect to
+            the rickroll video, and its social media preview will look identical
+            to the official one.
           </p>
           <p>
             For example,{" "}
-            <code className="bg">https://github.com/&#8203;github/&#8203;dmca</code> becomes{" "}
-            <code className="bg">https://<u>microsoft</u>github.com/&#8203;github/&#8203;dmca</code>.
+            <code
+              className="bg"
+              dangerouslySetInnerHTML={{ __html: siteParams.example.from }}
+            ></code>{" "}
+            becomes{" "}
+            <code
+              className="bg"
+              dangerouslySetInnerHTML={{ __html: siteParams.example.to }}
+            ></code>
+            .
           </p>
         </div>
 
         <div className={styles.section}>
-          <h1>Why?</h1>
+          <h2>Why?</h2>
           <p>
-            When I realized this domain hadn't been bought by Microsoft, I
-            decided to purchase it. It was dirt cheap, and I didn't want it to
-            fall into the hands of scammers who might use it for phishing. With
-            the domain in my hands, it would have been a waste not to use it to
-            rickroll unsuspecting people.
+            When I realized this domain hadn't been bought by{" "}
+            {siteParams.affiliation}, I decided to purchase it. It was dirt
+            cheap, and I didn't want it to fall into the hands of scammers who
+            might use it for phishing. With the domain in my hands, it would
+            have been a waste not to use it to rickroll unsuspecting people.
           </p>
           {rickrolled ? (
             <p>
@@ -102,8 +141,11 @@ export default function Home({ rickrolled }) {
         <div className={styles.section}>
           <p>
             Make sure to also check out{" "}
-            <a href="https://nintendo.uk.net/usage" rel="noreferrer noopener">
-              nintendo.uk.net
+            <a
+              href={`https://${siteParams.sibling}/usage`}
+              rel="noreferrer noopener"
+            >
+              {siteParams.sibling}
             </a>
             !
           </p>
@@ -125,7 +167,8 @@ export default function Home({ rickrolled }) {
           <a href="https://limes.pink" target="_blank" rel="noreferrer">
             limes.pink
           </a>{" "}
-          • Not affiliated with Microsoft or any of its subsidiaries •{" "}
+          • Not affiliated with {siteParams.affiliation} or any of its
+          subsidiaries •{" "}
           <a
             href="https://github.com/limesdotpink/microsoftgithub.com"
             target="_blank"
