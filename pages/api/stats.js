@@ -1,6 +1,9 @@
 import { SupabaseAdmin } from "../../lib/supabase-admin";
 
-export default async function handler(_req, res) {
+import getSiteParams from "../../lib/getSiteParams";
+
+export default async function handler(req, res) {
+  const siteParams = await getSiteParams(req.headers.host);
   try {
     const {
       data: {
@@ -8,7 +11,7 @@ export default async function handler(_req, res) {
       },
     } = await SupabaseAdmin.from("pages")
       .select("view_count")
-      .filter("slug", "eq", "rickrolled-user");
+      .filter("slug", "eq", `${siteParams.supabaseKeyPrefix}-user`);
 
     const {
       data: {
@@ -16,7 +19,7 @@ export default async function handler(_req, res) {
       },
     } = await SupabaseAdmin.from("pages")
       .select("view_count")
-      .filter("slug", "eq", "rickrolled-crawler");
+      .filter("slug", "eq", `${siteParams.supabaseKeyPrefix}-crawler`);
 
     let jsonStats = {
       rickrolled: {
@@ -41,6 +44,6 @@ export default async function handler(_req, res) {
     res.status(200).json(jsonStats);
   } catch (e) {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.status(500).send(`error: ${e}`)
+    res.status(500).send(`error: ${e}`);
   }
 }

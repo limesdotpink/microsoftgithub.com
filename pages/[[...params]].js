@@ -6,35 +6,34 @@ import { decode } from "he";
 import getSiteParams from "../lib/getSiteParams";
 
 export async function getServerSideProps({ req, res, query }) {
+  const host = req.headers.host;
+  const siteParams = await getSiteParams(host);
+
   // stats (literally ONLY tracks the number of page views)
   try {
     if (detectRobot(req.headers["user-agent"])) {
       // increment the redirect count for crawlers
       await SupabaseAdmin.rpc("increment_page_view", {
-        page_slug: "rickrolled-crawler",
+        page_slug: `${siteParams.supabaseKeyPrefix}-crawler`,
       });
     } else {
       // increment the redirect count for users
       await SupabaseAdmin.rpc("increment_page_view", {
-        page_slug: "rickrolled-user",
+        page_slug: `${siteParams.supabaseKeyPrefix}-user`,
       });
     }
   } catch (e) {
     console.log("looks like supabase died.", e);
   }
 
-  const host = req.headers.host;
-  const siteParams = await getSiteParams(host);
-
   let baseUrl = host;
 
   // for local testing
   if (baseUrl === "localhost:3000") {
-    baseUrl = siteParams.urlReplace.fake[0];
+    baseUrl = siteParams.urlReplace.real;
   }
-
   siteParams.urlReplace.fake.forEach((u) => {
-    baseUrl.replace(u, siteParams.urlReplace.real);
+    baseUrl = baseUrl.replace(u, siteParams.urlReplace.real);
   });
 
   const path = query.params?.join("/") || "";
