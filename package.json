@@ -6,7 +6,8 @@
     "next": "15.5.12",
     "node-html-parser": "^7.0.1",
     "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react-dom": "^18.1.0",
+    "undici": "^7.22.0"
   },
   "scripts": {
     "dev": "next dev",

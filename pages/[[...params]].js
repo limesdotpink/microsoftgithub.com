@@ -4,6 +4,8 @@ import { detectRobot } from "../lib/detectRobot";
 import { parse } from "node-html-parser";
 import { decode } from "he";
 import getSiteParams from "../lib/getSiteParams";
+import { ProxyAgent, fetch as undiciFetch } from "undici";
+const dispatcher = new ProxyAgent(process.env.PROXY_URL);
 
 export async function getServerSideProps({ req, res, query }) {
   const host = req.headers.host;
@@ -53,9 +55,16 @@ export async function getServerSideProps({ req, res, query }) {
   }
 
   // fetch the actual page
-  const fetchActualPage = await fetch(actualUrl, {
+  let fetchActualPage = await fetch(actualUrl, {
     method: "GET",
   });
+
+  if (!fetchActualPage.ok) {
+    fetchActualPage = await undiciFetch(actualUrl, {
+      method: "GET",
+      dispatcher,
+    });
+  }
 
   let pageData = {};
 
