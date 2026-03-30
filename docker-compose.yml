@@ -1,5 +1,5 @@
 services:
-  dcbadge:
+  fishy:
     #build: .
     image: ghcr.io/limesdotpink/microsoftgithub.com:main
     restart: unless-stopped
