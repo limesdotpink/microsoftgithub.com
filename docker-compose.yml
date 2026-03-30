@@ -1,7 +1,7 @@
 services:
   dcbadge:
-    build: .
-    #image: ghcr.io/limesdotpink/microsoftgithub.com:latest
+    #build: .
+    image: ghcr.io/limesdotpink/microsoftgithub.com:main
     restart: unless-stopped
     ports:
      - '3000:3000'
