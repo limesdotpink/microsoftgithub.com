@@ -220,6 +220,10 @@ export default function Home({
         .
       </p>
       **/}
+
+      <p style={{ display: "none" }}>
+        domain owned and operated by https://limes.pink/
+      </p>
       <a
         rel="me"
         style={{ display: "none" }}
