@@ -9,7 +9,7 @@ import { ProxyAgent, fetch as undiciFetch } from "undici";
 let proxyUrl = process.env.PROXY_URL;
 async function proxyFetch(...args) {
   if (proxyUrl) {
-    dispatcher = new ProxyAgent(proxyUrl);
+    const dispatcher = new ProxyAgent(proxyUrl);
 
     console.log(`[info] proxying request to ${actualUrl}`);
 
