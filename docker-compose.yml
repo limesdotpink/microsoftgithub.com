@@ -1,0 +1,8 @@
+services:
+  dcbadge:
+    build: .
+    #image: ghcr.io/limesdotpink/microsoftgithub.com:latest
+    restart: unless-stopped
+    ports:
+     - '3000:3000'
+    env_file: '.env'
