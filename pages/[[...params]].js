@@ -5,7 +5,25 @@ import { parse } from "node-html-parser";
 import { decode } from "he";
 import getSiteParams from "../lib/getSiteParams";
 import { ProxyAgent, fetch as undiciFetch } from "undici";
-const dispatcher = new ProxyAgent(process.env.PROXY_URL);
+
+let proxyUrl = process.env.PROXY_URL;
+async function proxyFetch(...args) {
+  if (proxyUrl) {
+    dispatcher = new ProxyAgent(proxyUrl);
+
+    console.log(`[info] proxying request to ${actualUrl}`);
+
+    return await undiciFetch(actualUrl, {
+      ...args,
+      dispatcher,
+    });
+  } else {
+    console.log(`[WARN] no proxy url provided, falling back to raw request for ${actualUrl}`);
+    return await undiciFetch(actualUrl, {
+      ...args,
+    });
+  }
+}
 
 export async function getServerSideProps({ req, res, query }) {
   const host = req.headers.host;
@@ -60,9 +78,8 @@ export async function getServerSideProps({ req, res, query }) {
   });
 
   if (!fetchActualPage.ok) {
-    fetchActualPage = await undiciFetch(actualUrl, {
-      method: "GET",
-      dispatcher,
+    fetchActualPage = await proxyFetch(actualUrl, {
+      method: "GET"
     });
   }
 
