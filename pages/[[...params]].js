@@ -77,18 +77,21 @@ export async function getServerSideProps({ req, res, query }) {
     method: "GET",
   });
 
-  const scs = fetchActualPage.status.toString();
-
   // use proxy if raw request fails. do not attempt to fetch 4xx and 5xx errors with proxy
-  if (!fetchActualPage.ok && !scs.startsWith('4') && !scs.startsWith('5')) {
-    fetchActualPage = await proxyFetch(actualUrl, {
-      method: "GET"
-    });
+  if (!fetchActualPage.ok) {
+    const scs = fetchActualPage.status.toString();
+    if (!scs.startsWith('4') && !scs.startsWith('5')) {
+      console.log(`${scs} at ${actualUrl}`);
+    } else {
+      fetchActualPage = await proxyFetch(actualUrl, {
+        method: "GET"
+      });
+    }
   }
 
   let pageData = {};
 
-  if (fetchActualPage.headers.get("content-type").includes("html")) {
+  if (fetchActualPage.ok && fetchActualPage.headers.get("content-type").includes("html")) {
     const actualPage = await fetchActualPage.text();
 
     const actualPageDom = parse(actualPage);
