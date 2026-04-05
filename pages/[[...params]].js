@@ -91,7 +91,7 @@ export async function getServerSideProps({ req, res, query }) {
 
   let pageData = {};
 
-  if (fetchActualPage.ok && fetchActualPage.headers.get("content-type").includes("html")) {
+  if (fetchActualPage.headers.get("content-type").includes("html")) {
     const actualPage = await fetchActualPage.text();
 
     const actualPageDom = parse(actualPage);
