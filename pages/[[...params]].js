@@ -7,7 +7,7 @@ import getSiteParams from "../lib/getSiteParams";
 import { ProxyAgent, fetch as undiciFetch } from "undici";
 
 let proxyUrl = process.env.PROXY_URL;
-async function proxyFetch(...args) {
+async function proxyFetch(actualUrl, ...args) {
   if (proxyUrl) {
     const dispatcher = new ProxyAgent(proxyUrl);
 
