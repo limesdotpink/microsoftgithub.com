@@ -77,7 +77,10 @@ export async function getServerSideProps({ req, res, query }) {
     method: "GET",
   });
 
-  if (!fetchActualPage.ok) {
+  const scs = fetchActualPage.status.toString():
+
+  // use proxy if raw request fails. do not attempt to fetch 4xx and 5xx errors with proxy
+  if (!fetchActualPage.ok && !scs.startsWith('4') && !scs.startsWith('5')) {
     fetchActualPage = await proxyFetch(actualUrl, {
       method: "GET"
     });
