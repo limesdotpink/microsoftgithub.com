@@ -48,13 +48,15 @@ export async function getServerSideProps({ req, res, query }) {
 
   let baseUrl = host;
 
-  // for local testing
-  if (baseUrl === "localhost:3000") {
-    baseUrl = siteParams.urlReplace.real;
-  }
   siteParams.urlReplace.fake.forEach((u) => {
     baseUrl = baseUrl.replace(u, siteParams.urlReplace.real);
   });
+
+  // catch local testing, or if the url hasn't been changed for some reason
+  if (baseUrl === "localhost:3000" || baseUrl === host) {
+    baseUrl = siteParams.urlReplace.real;
+    console.log(`[WARN]: unmodified url https://${host}/${path}, replacing with https://${baseUrl}/${path}`);
+  }
 
   const path = query.params?.join("/") || "";
 
