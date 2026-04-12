@@ -60,7 +60,14 @@ export async function getServerSideProps({ req, res, query }) {
 
   const path = query.params?.join("/") || "";
 
-  const actualUrl = `https://${baseUrl}/${path}`;
+  let actualUrl = `https://${baseUrl}/${path}`;
+
+  // nintendo.uk.net specific: if fetching the root path, fall back to en-gb
+  if (actualUrl === "https://nintendo.com/" || actualUrl === "https://www.nintendo.com/") {
+    actualUrl = "https://www.nintendo.com/en-gb/";
+  }
+
+  console.log(`\n${actualUrl}`);
 
   // we check if the user has been rickrolled on this page before
   const rickrolled = Boolean(
