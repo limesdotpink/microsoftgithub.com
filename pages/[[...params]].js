@@ -47,6 +47,7 @@ export async function getServerSideProps({ req, res, query }) {
   }
 
   let baseUrl = host;
+  const path = query.params?.join("/") || "";
 
   siteParams.urlReplace.fake.forEach((u) => {
     baseUrl = baseUrl.replace(u, siteParams.urlReplace.real);
@@ -57,8 +58,6 @@ export async function getServerSideProps({ req, res, query }) {
     baseUrl = siteParams.urlReplace.real;
     console.log(`[WARN]: unmodified url https://${host}/${path}, replacing with https://${baseUrl}/${path}`);
   }
-
-  const path = query.params?.join("/") || "";
 
   let actualUrl = `https://${baseUrl}/${path}`;
 
