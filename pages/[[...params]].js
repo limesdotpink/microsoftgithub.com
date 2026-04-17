@@ -18,7 +18,9 @@ async function proxyFetch(actualUrl, ...args) {
       dispatcher,
     });
   } else {
-    console.log(`[WARN] no proxy url provided, falling back to raw request for ${actualUrl}`);
+    console.log(
+      `[WARN] no proxy url provided, falling back to raw request for ${actualUrl}`,
+    );
     return await undiciFetch(actualUrl, {
       ...args,
     });
@@ -46,7 +48,7 @@ export async function getServerSideProps({ req, res, query }) {
     console.log("looks like supabase died.", e);
   }
 
-  let baseUrl = host;
+  let baseUrl = host.split(":")[0];
   const path = query.params?.join("/") || "";
 
   siteParams.urlReplace.fake.forEach((u) => {
@@ -54,15 +56,20 @@ export async function getServerSideProps({ req, res, query }) {
   });
 
   // catch local testing, or if the url hasn't been changed for some reason
-  if (baseUrl === "localhost:3000" || baseUrl === host) {
+  if (baseUrl === "localhost" || baseUrl === host) {
     baseUrl = siteParams.urlReplace.real;
-    console.log(`[WARN]: unmodified url https://${host}/${path}, replacing with https://${baseUrl}/${path}`);
+    console.log(
+      `[WARN]: unmodified url https://${host}/${path}, replacing with https://${baseUrl}/${path}`,
+    );
   }
 
   let actualUrl = `https://${baseUrl}/${path}`;
 
   // nintendo.uk.net specific: if fetching the root path, fall back to en-gb
-  if (actualUrl === "https://nintendo.com/" || actualUrl === "https://www.nintendo.com/") {
+  if (
+    actualUrl === "https://nintendo.com/" ||
+    actualUrl === "https://www.nintendo.com/"
+  ) {
     actualUrl = "https://www.nintendo.com/en-gb/";
   }
 
@@ -88,11 +95,11 @@ export async function getServerSideProps({ req, res, query }) {
   // use proxy if raw request fails. do not attempt to fetch 4xx and 5xx errors with proxy
   if (!fetchActualPage.ok) {
     const scs = fetchActualPage.status.toString();
-    if (scs.startsWith('4') || scs.startsWith('5')) {
+    if (scs.startsWith("4") || scs.startsWith("5")) {
       console.log(`${scs} at ${actualUrl}`);
     } else {
       fetchActualPage = await proxyFetch(actualUrl, {
-        method: "GET"
+        method: "GET",
       });
     }
   }
