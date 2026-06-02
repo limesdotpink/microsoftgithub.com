@@ -113,7 +113,7 @@ export async function getServerSideProps({ req, res, query }) {
 
     // extrapolate the title, description, and image
     pageData = {
-      title: decode(actualPageDom.querySelector("title").innerHTML) || "",
+      title: decode(actualPageDom.querySelector("title")?.innerHTML || "") || "",
 
       description:
         actualPageDom
