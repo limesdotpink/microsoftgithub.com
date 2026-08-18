@@ -56,8 +56,10 @@ export async function getServerSideProps({ req, res, query }) {
   });
 
   // catch local testing, or if the url hasn't been changed for some reason
-  if (baseUrl === "localhost" || baseUrl === host) {
-    baseUrl = siteParams.urlReplace.real;
+  // also guard against SSRF via host header manipulation (e.g. Host: 169.254.169.254:80)
+  const realHost = siteParams.urlReplace.real;
+  if (baseUrl === "localhost" || (baseUrl !== realHost && !baseUrl.endsWith(`.${realHost}`))) {
+    baseUrl = realHost;
     console.log(
       `[WARN]: unmodified url https://${host}/${path}, replacing with https://${baseUrl}/${path}`,
     );
