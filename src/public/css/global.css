@@ -29,6 +29,9 @@ body:has(.nin) {
     font-weight: 400;
 }
 
+
+/*
+
 a {
   color: inherit;
   text-decoration: underline;
@@ -60,3 +63,4 @@ body:has(.nin) h1 {
   background: #fff;
   color: #242424;
 }
+*/

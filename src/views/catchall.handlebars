@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+    <head>
+        <title>{{pageData.title}}</title>
+
+        <meta name="description" content="{{pageData.description}}" />
+        <meta property="twitter:card" content="{{pageData.twitterCard}}" />
+        <meta property="twitter:site" content="{{pageData.twitterSite}}" />
+        <meta property="twitter:title" content="{{pageData.title}}" />
+        <meta
+            property="twitter:description"
+            content="{{pageData.description}}"
+        />
+        <meta property="twitter:image" content="{{pageData.image}}" />
+        <meta property="og:title" content="{{pageData.title}}" />
+        <meta property="og:description" content="{{pageData.description}}" />
+        <meta property="og:image" content="{{pageData.image}}" />
+        <meta property="og:image:alt" content="{{pageData.imageAlt}}" />
+        <meta property="og:url" content="https://{{host}}/{{path}}" />
+        <meta property="og:site_name" content="{{pageData.ogSiteName}}" />
+        <meta property="og:type" content="object" />
+
+        <link rel="stylesheet" href="/css/global.css" />
+
+        <link rel="icon" href="{{pageData.favicon}}" />
+
+        <script>
+            window.location.href="{{{redirectUrl}}}"
+        </script>
+    </head>
+
+    <body>
+        <p style="display: none;">
+            domain owned and operated by https://limes.pink/
+        </p>
+        <a
+            rel="me"
+            style="display: none;"
+            aria-hidden="true"
+            href="https://fedi.limes.pink/@limes"
+        ></a>
+    </body>
+
+</html>

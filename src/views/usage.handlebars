@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/css/global.css">
+     <link rel="stylesheet" href="/css/usage.css">
+    <title>{{siteParams.title}}</title>
+        <meta
+          name="description"
+          content="A website that lets you create official-looking {{siteParams.realName}} links that
+          rickroll the visitor. Not affiliated with {{siteParams.affiliation}} or any of its subsidiaries."
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="{{siteParams.title}}" />
+        <meta
+          name="twitter:description"
+          content="A website that lets you create official-looking {{siteParams.realName}} links that
+          rickroll the visitor. Not affiliated with {{siteParams.affiliation}} or any of its subsidiaries."
+        />
+        <meta
+          name="twitter:image"
+          content="{{siteParams.ogImage}}"
+        />
+  </head>
+  <body>
+    <div class="wrapper {{siteParams.site}}">
+      <div class="content">
+        <div class="hero">
+          <h1>{{siteParams.title}}</h1>
+          <p>
+            A website that lets you create official-looking
+            {{siteParams.realName}} links that rickroll the visitor.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>Usage</h2>
+          <p>
+            Simply replace
+            <code class="bg">{{siteParams.urlReplace.real}}</code> with
+            {{{fakeSites}}}. The resulting URL will redirect to
+            the rickroll video, and its social media preview will look identical
+            to the official one.
+          </p>
+          <p>
+            For example,
+            <code
+              class="bg"
+            >{{{siteParams.example.from}}}</code>
+            becomes
+            <code
+              class="bg"
+            >{{{siteParams.example.to}}}</code>.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>Why?</h2>
+          <p>
+            When I realized this domain hadn't been bought by
+            {{siteParams.affiliation}}, I decided to purchase it. It was dirt
+            cheap, and I didn't want it to fall into the hands of scammers who
+            might use it for phishing. With the domain in my hands, it would
+            have been a waste not to use it to rickroll unsuspecting people.
+          </p>
+
+            <p>
+              To date,
+              <code
+                className="bg">{{stats.user}}</code>
+              visitors (excluding bots and crawlers) have been rickrolled, and
+              the number keeps growing!
+            </p>
+        </div>
+
+        <div className={styles.section}>
+          <p>
+            Make sure to also check out
+            <a
+              href='https://{{siteParams.sibling}}/usage'
+            >{{siteParams.sibling}}</a>!
+          </p>
+        </div>
+      </div>
+
+      <footer>
+        <p>
+          Made with
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="1em"
+            fill="currentColor"
+            viewBox="0 0 256 256"
+          >
+            <path d="M240,102c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,228.66,16,172,16,102A62.07,62.07,0,0,1,78,40c20.65,0,38.73,8.88,50,23.89C139.27,48.88,157.35,40,178,40A62.07,62.07,0,0,1,240,102Z"></path>
+          </svg>
+          by
+          <a href="https://limes.pink" target="_blank" rel="noreferrer">limes.pink</a>
+          • Not affiliated with {{siteParams.affiliation}} or any of its
+          subsidiaries •
+          <a
+            href="https://github.com/limesdotpink/microsoftgithub.com"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Source code
+          </a>
+        </p>
+        <a
+          rel="me"
+          style="display: none;"
+          href="https://fedi.limes.pink/@limes"
+          aria-hidden="true"
+        ></a>
+      </footer>
+    </div>
+  </body>
+</html>
