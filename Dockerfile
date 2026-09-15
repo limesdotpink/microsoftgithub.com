@@ -17,8 +17,7 @@ ENV NODE_ENV=production
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-COPY --from=build /usr/src/app/.next ./.next
-COPY --from=build /usr/src/app/public ./public
+COPY --from=build /usr/src/app/dist .
 COPY --from=build /usr/src/app/package.json ./package.json
 
 EXPOSE 3000
