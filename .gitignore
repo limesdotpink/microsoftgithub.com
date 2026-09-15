@@ -3,6 +3,8 @@
 /node_modules
 /build
 
+./store.json
+
 # Logs
 logs
 *.log

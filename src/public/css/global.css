@@ -28,39 +28,3 @@ body:has(.nin) {
   background: #f4f4f4;
     font-weight: 400;
 }
-
-
-/*
-
-a {
-  color: inherit;
-  text-decoration: underline;
-}
-a:hover {
-  text-decoration: underline 2px;
-}
-
-code.bg {
-  line-break: auto;
-  background: #484848;
-  padding: 0.1rem;
-  border-radius: 0.2rem;
-}
-body:has(.nin) code.bg {
-  color: unset;
-  background: #ccc;
-}
-
-body:has(.nin) h1 {
-  color: #ff1111;
-}
-
-.clickable {
-  cursor: pointer;
-}
-
-::selection {
-  background: #fff;
-  color: #242424;
-}
-*/

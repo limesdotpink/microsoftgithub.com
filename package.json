@@ -2,9 +2,9 @@
   "name": "fishy",
   "version": "2.0.0",
   "scripts": {
-    "start": "NODE_ENV=production node dist/src/server.js",
+    "start": "NODE_ENV=production node dist/server.js",
     "dev": "npx tsx --watch src/server.ts",
-    "build": "NODE_ENV=production tsc",
+    "build": "NODE_ENV=production tsc && copyfiles src/views src/public dist -u 1",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -29,6 +29,7 @@
     "eslint": "^10.10.0",
     "globals": "^17.12.0",
     "jiti": "^2.7.0",
+    "native-copyfiles": "^2.0.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.70.0"
   }

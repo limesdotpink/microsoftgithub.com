@@ -1,5 +1,6 @@
 import express, { type Request, type Response } from "express";
 import * as handlebars from "express-handlebars";
+import path from "node:path";
 import pino from "pino-http";
 
 import "dotenv/config";
@@ -13,10 +14,10 @@ const hbs = handlebars.create();
 
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
-app.set("views", "./src/views");
+app.set("views", path.join(__dirname, 'views'));
 
 app.use(pino());
-app.use(express.static("./src/public"));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/usage", (req: Request, res: Response) => usage(req, res));
 app.get("/api/stats", (req: Request, res: Response) => stats(req, res));
