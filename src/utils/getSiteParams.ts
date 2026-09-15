@@ -1,5 +1,5 @@
 // is this microsoftgithub.com or nintendo.uk.net
-export default async function getSiteParams(host) {
+export async function getSiteParams(host: string) {
   let site = "gh"; // fallback, used for testing
 
   const ghRegex = /microsoftgithub\.com$/;
@@ -20,20 +20,19 @@ export default async function getSiteParams(host) {
 const siteParams = [
   {
     site: "nin",
-    title: "NotTendo",
+    title: "Nottendo",
     realName: "Nintendo",
     affiliation: "Nintendo",
     urlReplace: {
-      fake: ["nintendo.uk.net", "nintendoswitch1.com"],
+      fake: process.env.TESTING ? ["t.nintendo.uk.net", "t.nintendoswitch1.com"] : ["nintendo.uk.net", "nintendoswitch1.com"],
       real: "nintendo.com",
     },
-    statsEndpoint: "https://nintendo.uk.net/api/stats",
+    ogImage: "https://nintendo.uk.net/img/nin.png",
     example: {
-      from: "https://www.nintendo.<u>com</u>/​en-gb/​Games/",
-      to: "https://www.nintendo.<u>uk.net</u>/​en-gb/​Games/",
+      from: "https://www.nintendo.<u>com</u>/en-gb/Games/",
+      to: "https://www.nintendo.<u>uk.net</u>/en-gb/Games/",
     },
-    sibling: "microsoftgithub.com",
-    supabaseKeyPrefix: "nintenclo-rickrolled",
+    sibling: process.env.TESTING ? "t.microsoftgithub.com" : "microsoftgithub.com"
   },
   {
     site: "gh",
@@ -41,15 +40,14 @@ const siteParams = [
     realName: "GitHub",
     affiliation: "Microsoft",
     urlReplace: {
-      fake: ["microsoftgithub.com"],
+      fake: process.env.TESTING ? ["t.microsoftgithub.com"] : ["microsoftgithub.com"],
       real: "github.com",
     },
-    statsEndpoint: "https://microsoftgithub.com/api/stats",
+    ogImage: "https://microsoftgithub.com/img/gh.png",
     example: {
-      from: "https://github.com/​github/​dmca",
-      to: "https://<u>microsoft</u>github.com/​github/​dmca",
+      from: "https://github.com/github/dmca",
+      to: "https://<u>microsoft</u>github.com/github/dmca",
     },
-    sibling: "nintendo.uk.net",
-    supabaseKeyPrefix: "rickrolled",
+    sibling: process.env.TESTING ? "t.nintendo.uk.net" : "nintendo.uk.net",
   },
 ];
