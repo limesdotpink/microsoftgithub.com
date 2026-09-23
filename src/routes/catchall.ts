@@ -2,7 +2,7 @@ import { type Request, type Response } from "express";
 import { detectRobot } from "../utils/detectRobot";
 import { parse } from "node-html-parser";
 import { decode } from "he";
-import { getSiteParams } from "../utils/getSiteParams";
+import { getSiteParams, allowedHostnames } from "../utils/getSiteParams";
 import { ProxyAgent, fetch as undiciFetch } from "undici";
 
 import { bumpStat } from "../utils/usageStats";
@@ -12,6 +12,10 @@ export const catchall = async (req: Request, res: Response) => {
     async function proxyFetch(actualUrl: string) {
         if (proxyUrl) {
             const dispatcher = new ProxyAgent(proxyUrl);
+
+            req.log.info(
+                `proxyfetch: ${actualUrl}`,
+            );
 
             return await undiciFetch(actualUrl, { method: "GET", dispatcher });
         } else {
@@ -24,7 +28,7 @@ export const catchall = async (req: Request, res: Response) => {
         }
     }
 
-    const host = req.host;
+    const host = req.hostname;
     const siteParams = await getSiteParams(host);
 
     // stats (literally ONLY tracks the number of page views)
@@ -77,6 +81,12 @@ export const catchall = async (req: Request, res: Response) => {
         );
     }
 
+    // as a final check before fetching, return if we're not targeting an allowed hostname
+    if (allowedHostnames.filter(h => baseUrl.endsWith(h)).length === 0) {
+        res.status(500).send();
+        return;
+    }
+
     // fetch the actual page
     let fetchActualPage = await undiciFetch(actualUrl, {
         method: "GET",
@@ -85,12 +95,13 @@ export const catchall = async (req: Request, res: Response) => {
     // use proxy if raw request fails. do not attempt to fetch 4xx and 5xx errors with proxy
     if (!fetchActualPage.ok) {
         const scs = fetchActualPage.status.toString();
-        if (!scs.startsWith("4") || !scs.startsWith("5")) {
+
+        if (!scs.startsWith("4") && !scs.startsWith("5")) {
             fetchActualPage = await proxyFetch(actualUrl);
         }
     }
 
-    let pageData = {};
+    let pageData;
 
     if (fetchActualPage.headers.get("content-type")?.includes("html")) {
         const actualPage = await fetchActualPage.text();
@@ -178,6 +189,9 @@ export const catchall = async (req: Request, res: Response) => {
                     ?.getAttribute("href") ||
                 "",
         };
+    } else {
+        res.status(500).send();
+        return;
     }
 
     /* if the user has already been rickrolled by the page, we redirect to the actual repo.

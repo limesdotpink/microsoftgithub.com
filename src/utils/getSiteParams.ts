@@ -17,6 +17,8 @@ export async function getSiteParams(host: string) {
   return siteParams.filter((s) => s.site === site)[0];
 }
 
+export const allowedHostnames = [ 'nintendo.com', 'github.com' ]
+
 const siteParams = [
   {
     site: "nin",
