@@ -9,7 +9,7 @@ COPY . .
 RUN npm run build
 
 # runtime
-FROM node:24.3-alpine AS runtime
+FROM node:24-alpine AS runtime
 WORKDIR /usr/src/app
 
 ENV NODE_ENV=production
